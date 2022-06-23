@@ -21,11 +21,11 @@ expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
 
-# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
+# Data file name stem = absolute path + name; later add .psy_exp, .csv, .log, etc
 filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
-thisExp = data.ExperimentHandler(name=expName, version='',
+thisExp = data.ExperimentHandler(name=expName, version='1.0',
                                  extraInfo=expInfo, runtimeInfo=None,
                                  savePickle=True, saveWideText=True,
                                  dataFileName=filename)
@@ -37,7 +37,7 @@ logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a f
 win_height = 1920
 win_width = 1080
 
-# Setup the Window
+# Set up the Window
 win = visual.Window(
     size=(win_height, win_width), fullscr=False, screen=0,
     winType='pyglet', allowGUI=False, allowStencil=False,
@@ -48,23 +48,42 @@ win = visual.Window(
 # Initialize components for Routine "Instruction"
 InstructionClock = core.Clock()
 mouse = event.Mouse(visible=True, win=win)
+
+# Create text objects
+instr_text_rus = 'В данном эксперименте Вам необходимо искать целевые объекты и нажимать на них ЛЕВОЙ КНОПКОЙ МЫШИ. ' \
+                 'В одном блоке испытаний вам предстоит пройти процедуру поиска ' \
+                 'объектов с одними и теми же целевыми объектами , ' \
+                 'после чего начнется следующий блок с поиском других целевых объектов. В начале каждого блока ' \
+                 'необходимо нажать ПРОБЕЛ для выполнения заданий поиска в данном блоке. ' \
+                 'Перед началом процедуры поиска Вам будут предъявлены целевые стимулы на короткое время.' \
+                 'Если вы выберете объект, который не является целевым, вы увидете ошибку и процедура' \
+                 'поиска начнется сначала. Старайтесь выполнять поиск как можно быстрее и точнее.' \
+                 'Сначала вам необходимо пройти короткую тренировочную сессию, ' \
+                 'после чего вы сможете приступить к основной сессии. ' \
+                 'Для начала тренировочной сессии нажмите ПРОБЕЛ.'
+
+end_train_text_rus = 'Тренировочная сессия окончена, если у вас остались вопросы, задайте их экспериментатору.' \
+                     'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
+                     'Старайтесь выполнять поиск как можно быстрее и точнее.'
+
+
 instruction = visual.TextStim(win=win, name='text',
-                              text='Here I will write an instruction',
+                              text=instr_text_rus,
                               font='Open Sans',
-                              pos=(0, 0), height=50, wrapWidth=None, ori=0.0,
+                              pos=(0, 0), height=30, wrapWidth=1500, ori=0.0,
                               color='white', colorSpace='rgb', opacity=None,
                               languageStyle='LTR',
                               depth=0.0)
-instr_resp = keyboard.Keyboard()
+
 
 end_of_train = visual.TextStim(win=win, name='text',
-                               text='You finished training session',
+                               text=end_train_text_rus,
                                font='Open Sans',
-                               pos=(0, 0), height=50, wrapWidth=None, ori=0.0,
+                               pos=(0, 0), height=40, wrapWidth=1500, ori=0.0,
                                color='white', colorSpace='rgb', opacity=None,
                                languageStyle='LTR',
                                depth=0.0)
-end_of_train_key = keyboard.Keyboard()
+
 
 # Create default stimuli
 green_cc = visual.Circle(win,
@@ -326,7 +345,7 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
         timer.reset()
 
         # loop to show a patch of 6 objects (one screen with 6 stimuli)
-        for stim_screen in range(0, 15):
+        for stim_screen in range(0, 10):
             timer.reset()  # Beginning of the time recording
             stim_set, block_targets = make_stim_set(targ_rg, feat_stim,
                                                     targ_yb, conj_stim,
