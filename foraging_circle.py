@@ -66,7 +66,6 @@ end_train_text_rus = 'Тренировочная сессия окончена, 
                      'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
                      'Старайтесь выполнять поиск как можно быстрее и точнее.'
 
-
 instruction = visual.TextStim(win=win, name='text',
                               text=instr_text_rus,
                               font='Open Sans',
@@ -74,7 +73,6 @@ instruction = visual.TextStim(win=win, name='text',
                               color='white', colorSpace='rgb', opacity=None,
                               languageStyle='LTR',
                               depth=0.0)
-
 
 end_of_train = visual.TextStim(win=win, name='text',
                                text=end_train_text_rus,
@@ -84,7 +82,6 @@ end_of_train = visual.TextStim(win=win, name='text',
                                languageStyle='LTR',
                                depth=0.0)
 
-
 # Create default stimuli
 green_cc = visual.Circle(win,
                          radius=20,
@@ -92,7 +89,7 @@ green_cc = visual.Circle(win,
                          pos=(0, 0),
                          units='pix',
                          lineWidth=1.5,
-                         fillColor='LawnGreen',
+                         fillColor='Green',
                          colorSpace='rgb')
 # make several dictionaries for each object to know what is the name of the object
 green_dict_cc = {'name': 'green_cc', 'figure': green_cc}
@@ -133,7 +130,7 @@ green_sq = visual.Rect(win,
                        pos=(0, 0),
                        units='pix',
                        lineWidth=1.5,
-                       fillColor='LawnGreen',
+                       fillColor='Green',
                        colorSpace='rgb')
 green_dict_sq = {'name': 'green_sq', 'figure': green_sq}
 
@@ -172,6 +169,9 @@ def make_circle_coord(x, y, R):
     edge_y_1 = 540 - r
     edge_y_2 = -540 + r
 
+    # Positioning in circle (e.g 'left', 'right', 'upper left' always same for all patches)
+    # Positioning: {stim_0:right}, {stim1:upper right}, {stim2:upper left},
+    # {stim3:left}, {stim4:lower left}, {stim5: lower right}
     for coord in range(0, 6):
         x_n = R * cos(radians(60 * coord)) + x
         y_n = R * sin(radians(60 * coord)) + y
@@ -283,7 +283,6 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
         x_j = circle_coord_jit.get(('x' + str(pos)))
         y_j = circle_coord_jit.get(('y' + str(pos)))
         r = sqrt((x_j - resp_x) ** 2 + (y_j - resp_y) ** 2)  # Find out how far the click from center of object
-
         # compare distance from click and available distance
         # (considering the actual radius of the object + some additional distance)
         if r < available_radius_for_click:
@@ -295,6 +294,8 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
             if selected_stim_name == targets[0].get('name') or selected_stim_name == targets[1].get('name'):
                 correct_answer = True
                 selected_time = timer.getTime()
+                thisExp.addData('direction', str(pos))
+
                 # check if there was a switch
                 if selected_stim_name == selected_stim:
                     thisExp.addData('switch', 0)
@@ -345,7 +346,7 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
         timer.reset()
 
         # loop to show a patch of 6 objects (one screen with 6 stimuli)
-        for stim_screen in range(0, 10):
+        for stim_screen in range(0, 15):
             timer.reset()  # Beginning of the time recording
             stim_set, block_targets = make_stim_set(targ_rg, feat_stim,
                                                     targ_yb, conj_stim,
@@ -353,12 +354,13 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
                                                     targ_rsq_gcc)
 
             circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
-
+            thisExp.addData('back_to_center', 0)
             # check if the edge was reached
             if not circle_coord:
                 central_x = 0
                 central_y = 0
                 circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
+                thisExp.addData('back_to_center', 1)
 
             check = trial_procedure(stim_set, circle_coord_jitter, circle_coord, block_targets)
 
@@ -457,7 +459,7 @@ for block in range(0, 4):
 
     trials(target1, target2, feat_targ_rg,
            feat_targ_yb, conj_targ_rcc_gsq,
-           conj_targ_rsq_gcc, stim_conj, stim_feat, 5)
+           conj_targ_rsq_gcc, stim_conj, stim_feat, 20)
 
 # save the output data
 thisExp.saveAsWideText(filename + '.csv', delim='auto')
