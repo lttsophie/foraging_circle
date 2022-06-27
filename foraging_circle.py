@@ -193,6 +193,17 @@ def make_circle_coord(x, y, R):
     return circle_coord, circle_coord_jit
 
 
+def feature_conjunction_check(targ):
+    if targ == [red_dict_cc, green_dict_cc]:
+        thisExp.addData('condition', 'feat')
+    elif targ == [yellow_dict_cc, blue_dict_cc]:
+        thisExp.addData('condition', 'feat')
+    if targ == [red_dict_cc, green_dict_sq]:
+        thisExp.addData('condition', 'conj')
+    if targ == [red_dict_sq, green_dict_cc]:
+        thisExp.addData('condition', 'conj')
+
+
 def quit_exp():
     keys = event.getKeys(keyList=['escape'])  # collect key presses after first flip
     if keys:
@@ -238,6 +249,7 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
     thisExp.addData('training_trials', training_trials)
     thisExp.addData('target1', targets[0].get('name'))
     thisExp.addData('target2', targets[1].get('name'))
+    feature_conjunction_check(targets)
     # creating and recording all stimuli and their positions
     for stim_n in range(0, 6):
         stim_pos = [circle_coord_jit.get(('x' + str(stim_n))), circle_coord_jit.get(('y' + str(stim_n)))]
