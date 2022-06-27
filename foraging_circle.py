@@ -1,9 +1,10 @@
 from __future__ import absolute_import, division
+
 import os  # handy system and path functions
 import random
 from math import sin, cos, radians, sqrt
+
 from psychopy import gui, visual, core, data, event, logging
-from psychopy.hardware import keyboard
 
 # Ensure that relative paths start from the same directory as this script
 
@@ -214,6 +215,14 @@ def quit_exp():
             core.quit()
 
 
+def how_many_targets(stim_set, targets):
+    count = 0
+    for stim in range(0, 5):
+        if stim_set[stim] == targets[0] or stim_set[stim] == targets[1]:
+            count += 1
+    return count
+
+
 def make_stim_set(feat_t_rg, s_feat, feat_t_yb, s_conj, conj_t_rcc_gsq, conj_t_rsq_gcc):
     if curr_block == feat_t_rg:
         stim_set = make_lst_stims_in_circle(feat_t_rg, s_feat)
@@ -244,11 +253,14 @@ trial_break_text = visual.TextStim(win=win, name='text',
 
 def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
     global central_x, central_y, selected_stim
+    # Record of all already known data
     thisExp.addData('block_n', block_n)
     thisExp.addData('trial_n', trial_n)
     thisExp.addData('training_trials', training_trials)
     thisExp.addData('target1', targets[0].get('name'))
     thisExp.addData('target2', targets[1].get('name'))
+    # Count and record how many targets in patch
+    thisExp.addData('num_of_targets', how_many_targets(stim_set, targets))
     feature_conjunction_check(targets)
     # creating and recording all stimuli and their positions
     for stim_n in range(0, 6):
