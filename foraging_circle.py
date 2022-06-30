@@ -483,7 +483,7 @@ for block in range(0, 4):
 
     trials(target1, target2, feat_targ_rg,
            feat_targ_yb, conj_targ_rcc_gsq,
-           conj_targ_rsq_gcc, stim_conj, stim_feat, 20)
+           conj_targ_rsq_gcc, stim_conj, stim_feat, 32)
 
 # save the output data
 thisExp.saveAsWideText(filename + '.csv', delim='auto')
