@@ -253,7 +253,7 @@ trial_break_text = visual.TextStim(win=win, name='text',
                                    depth=0.0)
 
 
-def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
+def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets, edge):
     global central_x, central_y, selected_stim
     # Record of all already known data
     thisExp.addData('block_n', block_n)
@@ -261,6 +261,10 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
     thisExp.addData('training_trials', training_trials)
     thisExp.addData('target1', targets[0].get('name'))
     thisExp.addData('target2', targets[1].get('name'))
+    if edge:
+        thisExp.addData('back_to_center', 'TRUE')
+    else:
+        thisExp.addData('back_to_center', 'FALSE')
     # Count and record how many targets in patch
     thisExp.addData('num_of_targets', how_many_targets(stim_set, targets))
     feature_conjunction_check(targets)
@@ -309,6 +313,7 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
         x_j = circle_coord_jit.get(('x' + str(pos)))
         y_j = circle_coord_jit.get(('y' + str(pos)))
         r = sqrt((x_j - resp_x) ** 2 + (y_j - resp_y) ** 2)  # Find out how far the click from center of object
+
         # compare distance from click and available distance
         # (considering the actual radius of the object + some additional distance)
         if r < available_radius_for_click:
@@ -321,7 +326,6 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
                 correct_answer = True
                 selected_time = timer.getTime()
                 thisExp.addData('direction', str(pos))
-
                 # check if there was a switch
                 if selected_stim_name == selected_stim:
                     thisExp.addData('switch', 0)
@@ -332,19 +336,26 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
                 thisExp.addData('selected_stim', selected_stim_name)
                 thisExp.addData('x_targ', x_j)
                 thisExp.addData('y_targ', y_j)
-                thisExp.addData('targ_selected', 1)
-                thisExp.addData('target_select_time', selected_time)
+                thisExp.addData('targ_selected', 'TRUE')
 
             else:
-                thisExp.addData('targ_selected', 0)
+                thisExp.addData('targ_selected', 'FALSE')
+                thisExp.addData('selected_stim', selected_stim_name)
+                thisExp.addData('x_targ', x_j)
+                thisExp.addData('y_targ', y_j)
 
             is_click_valid = True
+
+    if is_click_valid:
+        thisExp.addData('valid_click', 'TRUE')
+    else:
+        thisExp.addData('valid_click', 'FALSE')
 
     thisExp.nextEntry()  # go to the next raw in data file
 
     # if click was not in any object range run the function again
     if not is_click_valid:
-        correct_answer = trial_procedure(stim_set, circle_coord_jit, circle_coord, targets)
+        correct_answer = trial_procedure(stim_set, circle_coord_jit, circle_coord, targets, edge)
     return correct_answer
 
 
@@ -372,16 +383,17 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
                                                     targ_rsq_gcc)
 
             circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
-            thisExp.addData('back_to_center', 0)
+            edge_reached = False
             # check if the edge was reached
             if not circle_coord:
+                edge_reached = True
                 central_x = 0
                 central_y = 0
                 circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
                 # if participant reached the edge and patch of objects moved to center
-                thisExp.addData('back_to_center', 1)
 
-            check = trial_procedure(stim_set, circle_coord_jitter, circle_coord, block_targets)
+
+            check = trial_procedure(stim_set, circle_coord_jitter, circle_coord, block_targets, edge_reached)
 
             # if not target selected
             if not check:
