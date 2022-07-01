@@ -14,7 +14,7 @@ os.chdir(_thisDir)
 # Store info about the experiment session
 psychopyVersion = '2021.2.3'
 expName = 'foraging_circle'  # from the Builder filename that created this script
-expInfo = {'participant': '', 'session': ''}
+expInfo = {'participant': '', 'age': '', 'gender': ''}
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if not dlg.OK:
     core.quit()  # user pressed cancel
@@ -26,7 +26,7 @@ expInfo['psychopyVersion'] = psychopyVersion
 filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
-thisExp = data.ExperimentHandler(name=expName, version='1.0',
+thisExp = data.ExperimentHandler(name=expName, version='1.1',
                                  extraInfo=expInfo, runtimeInfo=None,
                                  savePickle=True, saveWideText=True,
                                  dataFileName=filename)
@@ -51,21 +51,23 @@ InstructionClock = core.Clock()
 mouse = event.Mouse(visible=True, win=win)
 
 # Create text objects
-instr_text_rus = 'В данном эксперименте Вам необходимо искать целевые объекты и нажимать на них ЛЕВОЙ КНОПКОЙ МЫШИ. ' \
-                 'В одном блоке испытаний вам предстоит пройти процедуру поиска ' \
-                 'объектов с одними и теми же целевыми объектами , ' \
-                 'после чего начнется следующий блок с поиском других целевых объектов. В начале каждого блока ' \
-                 'необходимо нажать ПРОБЕЛ для выполнения заданий поиска в данном блоке. ' \
-                 'Перед началом процедуры поиска Вам будут предъявлены целевые стимулы на короткое время.' \
-                 'Если вы выберете объект, который не является целевым, вы увидете ошибку и процедура' \
-                 'поиска начнется сначала. Старайтесь выполнять поиск как можно быстрее и точнее.' \
-                 'Сначала вам необходимо пройти короткую тренировочную сессию, ' \
-                 'после чего вы сможете приступить к основной сессии. ' \
-                 'Для начала тренировочной сессии нажмите ПРОБЕЛ.'
+instr_text_rus = 'Пожалуйста прочитайте инструкцию к данному эксперименту, которую Вам предоставил экспериментатор. ' \
+                 'Если у Вас возникли вопросы задайте их экспериментатору. Если у Вас нет вопросов, Вы можете ' \
+                 'приступить к выполнению тренировочной сессии нажав ПРОБЕЛ. ' \
+                 'Старайтесь искать объекты как можно быстрее и точнее.'
+
+instr_text_en = 'Please read the instructions for this experiment that the experimenter provided to you. ' \
+                'If you have any questions, ask the experimentator. If everything is clear you can start ' \
+                'the training session by pressing SPACE button. ' \
+                'Try to search for objects as quickly and accurately as possible.'
 
 end_train_text_rus = 'Тренировочная сессия окончена, если у вас остались вопросы, задайте их экспериментатору.' \
                      'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
-                     'Старайтесь выполнять поиск как можно быстрее и точнее.'
+                     'Старайтесь искать объекты как можно быстрее и точнее.'
+
+end_train_text_en = 'The training session is over, if you have any questions, ask the experimenter. ' \
+                    'To start the main session, press the SPACE button. ' \
+                    'Try to search for objects as quickly and accurately as possible.'
 
 instruction = visual.TextStim(win=win, name='text',
                               text=instr_text_rus,
@@ -210,7 +212,7 @@ def quit_exp():
     if keys:
         if 'escape' in keys:
             thisExp.nextEntry()  # if someone wants to escape the experiment
-            thisExp.addData('trial_n', 'NO THIS IS PATRIK')
+            thisExp.addData('trial_n', 'BLEEP BLOOP SOMEONE PRESSED ESC')
             thisExp.saveAsWideText(filename + '.csv', delim='auto')
             core.quit()
 
@@ -334,17 +336,9 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets):
                 thisExp.addData('target_select_time', selected_time)
 
             else:
-                dist_selected_time = timer.getTime()
                 thisExp.addData('targ_selected', 0)
-                thisExp.addData('dist_selected_time', dist_selected_time)
 
             is_click_valid = True
-    # check if click in any object range
-    if is_click_valid:
-        thisExp.addData('is_click_valid', 1)
-    else:
-        thisExp.addData('is_click_valid', 0)
-        thisExp.addData('targ_selected', 0)
 
     thisExp.nextEntry()  # go to the next raw in data file
 
@@ -384,6 +378,7 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
                 central_x = 0
                 central_y = 0
                 circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
+                # if participant reached the edge and patch of objects moved to center
                 thisExp.addData('back_to_center', 1)
 
             check = trial_procedure(stim_set, circle_coord_jitter, circle_coord, block_targets)
