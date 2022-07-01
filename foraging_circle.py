@@ -56,14 +56,14 @@ instr_text_rus = 'Пожалуйста прочитайте инструкцию
                  'приступить к выполнению тренировочной сессии нажав ПРОБЕЛ. ' \
                  'Старайтесь искать объекты как можно быстрее и точнее.'
 
+end_train_text_rus = 'Тренировочная сессия окончена, если у вас остались вопросы, задайте их экспериментатору.' \
+                     'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
+                     'Старайтесь искать объекты как можно быстрее и точнее.'
+
 instr_text_en = 'Please read the instructions for this experiment that the experimenter provided to you. ' \
                 'If you have any questions, ask the experimentator. If everything is clear you can start ' \
                 'the training session by pressing SPACE button. ' \
                 'Try to search for objects as quickly and accurately as possible.'
-
-end_train_text_rus = 'Тренировочная сессия окончена, если у вас остались вопросы, задайте их экспериментатору.' \
-                     'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
-                     'Старайтесь искать объекты как можно быстрее и точнее.'
 
 end_train_text_en = 'The training session is over, if you have any questions, ask the experimenter. ' \
                     'To start the main session, press the SPACE button. ' \
