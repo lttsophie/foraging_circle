@@ -433,8 +433,21 @@ selected_stim = ''
 # --Start training trials-- #
 training_trials = 1
 for block in range(0, 4):
-    if not all_blocks:
-        break
+    # Create text message for the beginning of each block
+    block_num_text = visual.TextStim(win=win, name='text',
+                                     text='Block #' + str(block + 1),
+                                     font='Open Sans',
+                                     pos=(0, 150), height=50, wrapWidth=None, ori=0.0,
+                                     color='white', colorSpace='rgb', opacity=None,
+                                     languageStyle='LTR',
+                                     depth=0.0)
+    block_key_text = visual.TextStim(win=win, name='text',
+                                     text='Press SPACE to continue',
+                                     font='Open Sans',
+                                     pos=(0, -200), height=50, wrapWidth=None, ori=0.0,
+                                     color='white', colorSpace='rgb', opacity=None,
+                                     languageStyle='LTR',
+                                     depth=0.0)
     # -Show targets for this block- #
     curr_block = random.choice(all_blocks)
     all_blocks.remove(curr_block)
@@ -446,6 +459,8 @@ for block in range(0, 4):
     target2.pos = (40, 0)
     target1.draw()
     target2.draw()
+    block_num_text.draw()
+    block_key_text.draw()
     win.flip(clearBuffer=True)
     event.waitKeys(keyList='space')  # waiting for a key press in the beginning of each block
 
@@ -455,7 +470,7 @@ for block in range(0, 4):
 
 training_trials = 0
 
-# End ogf the training screen
+# End of the training screen
 end_of_train.draw()
 win.flip()
 event.waitKeys(keyList=['space'])
@@ -469,6 +484,21 @@ time_for_participant.reset()
 not_correct_answer = 0
 # ---Start of the Experimental trials--- #
 for block in range(0, 4):
+    # Create text message for the beginning of each block
+    block_num_text = visual.TextStim(win=win, name='text',
+                                     text='Block #' + str(block + 1),
+                                     font='Open Sans',
+                                     pos=(0, 150), height=50, wrapWidth=None, ori=0.0,
+                                     color='white', colorSpace='rgb', opacity=None,
+                                     languageStyle='LTR',
+                                     depth=0.0)
+    block_key_text = visual.TextStim(win=win, name='text',
+                                     text='Press SPACE to continue',
+                                     font='Open Sans',
+                                     pos=(0, -200), height=50, wrapWidth=None, ori=0.0,
+                                     color='white', colorSpace='rgb', opacity=None,
+                                     languageStyle='LTR',
+                                     depth=0.0)
     # -Show targets for this block- #
     curr_block = random.choice(all_blocks)
     all_blocks.remove(curr_block)
@@ -477,6 +507,8 @@ for block in range(0, 4):
     target2 = curr_block[1].get('figure')
     target1.pos = (-40, 0)
     target2.pos = (40, 0)
+    block_num_text.draw()
+    block_key_text.draw()
     target1.draw()
     target2.draw()
     win.flip(clearBuffer=True)
