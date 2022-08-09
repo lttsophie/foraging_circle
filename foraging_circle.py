@@ -533,7 +533,7 @@ end_of_exp_result_time_text = visual.TextStim(win=win, name='text',
                                               languageStyle='LTR',
                                               depth=0.0)
 end_of_exp_correct_answer_percentage_text = visual.TextStim(win=win, name='text',
-                                                            text='Total percentage of correct answers: ' +
+                                                            text='Total percentage of correctly finished trials: ' +
                                                                  str(correct_answer_percentage) + '%',
                                                             font='Open Sans',
                                                             pos=(0, -60), height=30, wrapWidth=None, ori=0.0,
