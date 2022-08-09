@@ -51,17 +51,8 @@ InstructionClock = core.Clock()
 mouse = event.Mouse(visible=True, win=win)
 
 # Create text objects
-instr_text_rus = 'Пожалуйста прочитайте инструкцию к данному эксперименту, которую Вам предоставил экспериментатор. ' \
-                 'Если у Вас возникли вопросы задайте их экспериментатору. Если у Вас нет вопросов, Вы можете ' \
-                 'приступить к выполнению тренировочной сессии нажав ПРОБЕЛ. ' \
-                 'Старайтесь искать объекты как можно быстрее и точнее.'
-
-end_train_text_rus = 'Тренировочная сессия окончена, если у вас остались вопросы, задайте их экспериментатору.' \
-                     'Чтобы начать основную сессию нажмите ПРОБЕЛ. ' \
-                     'Старайтесь искать объекты как можно быстрее и точнее.'
-
 instr_text_en = 'Please read the instructions for this experiment that the experimenter provided to you. ' \
-                'If you have any questions, ask the experimentator. If everything is clear you can start ' \
+                'If you have any questions, ask the experimenter. If everything is clear you can start ' \
                 'the training session by pressing SPACE button. ' \
                 'Try to search for objects as quickly and accurately as possible.'
 
@@ -70,7 +61,7 @@ end_train_text_en = 'The training session is over, if you have any questions, as
                     'Try to search for objects as quickly and accurately as possible.'
 
 instruction = visual.TextStim(win=win, name='text',
-                              text=instr_text_rus,
+                              text=instr_text_en,
                               font='Open Sans',
                               pos=(0, 0), height=30, wrapWidth=1500, ori=0.0,
                               color='white', colorSpace='rgb', opacity=None,
@@ -78,7 +69,7 @@ instruction = visual.TextStim(win=win, name='text',
                               depth=0.0)
 
 end_of_train = visual.TextStim(win=win, name='text',
-                               text=end_train_text_rus,
+                               text=end_train_text_en,
                                font='Open Sans',
                                pos=(0, 0), height=40, wrapWidth=1500, ori=0.0,
                                color='white', colorSpace='rgb', opacity=None,
@@ -254,7 +245,7 @@ trial_break_text = visual.TextStim(win=win, name='text',
 
 
 def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets, edge):
-    global central_x, central_y, selected_stim
+    global central_x, central_y, selected_stim, not_correct_answer
     # Record of all already known data
     thisExp.addData('block_n', block_n)
     thisExp.addData('trial_n', trial_n)
@@ -332,13 +323,13 @@ def trial_procedure(stim_set, circle_coord_jit, circle_coord, targets, edge):
                 else:
                     thisExp.addData('switch', 1)
                 selected_stim = selected_stim_name
-
                 thisExp.addData('selected_stim', selected_stim_name)
                 thisExp.addData('x_targ', x_j)
                 thisExp.addData('y_targ', y_j)
                 thisExp.addData('targ_selected', 'TRUE')
 
             else:
+                not_correct_answer += 1
                 thisExp.addData('targ_selected', 'FALSE')
                 thisExp.addData('selected_stim', selected_stim_name)
                 thisExp.addData('x_targ', x_j)
@@ -392,7 +383,6 @@ def trials(t_1, t_2, targ_rg, targ_yb, targ_rcc_gsq, targ_rsq_gcc, conj_stim, fe
                 circle_coord, circle_coord_jitter = make_circle_coord(central_x, central_y, 90)
                 # if participant reached the edge and patch of objects moved to center
 
-
             check = trial_procedure(stim_set, circle_coord_jitter, circle_coord, block_targets, edge_reached)
 
             # if not target selected
@@ -431,7 +421,11 @@ event.waitKeys(keyList=['space'])
 # Create global counters
 central_x = 0
 central_y = 0
+not_correct_answer = 0
+# Create timer to record each selection time
 timer = core.Clock()
+# Create timer to record overall time for the experiment
+time_for_participant = core.Clock()
 block_n = 0
 trial_n = 0
 selected_stim = ''
@@ -471,10 +465,10 @@ stim_feat = [red_dict_cc, green_dict_cc, yellow_dict_cc, blue_dict_cc]
 stim_conj = [red_dict_cc, green_dict_sq, red_dict_sq, green_dict_cc]
 all_blocks = [feat_targ_rg, feat_targ_yb, conj_targ_rcc_gsq, conj_targ_rsq_gcc]
 
+time_for_participant.reset()
+not_correct_answer = 0
 # ---Start of the Experimental trials--- #
 for block in range(0, 4):
-    if not all_blocks:
-        break
     # -Show targets for this block- #
     curr_block = random.choice(all_blocks)
     all_blocks.remove(curr_block)
@@ -487,10 +481,42 @@ for block in range(0, 4):
     target2.draw()
     win.flip(clearBuffer=True)
     event.waitKeys(keyList='space')
-
     trials(target1, target2, feat_targ_rg,
            feat_targ_yb, conj_targ_rcc_gsq,
            conj_targ_rsq_gcc, stim_conj, stim_feat, 32)
 
 # save the output data
 thisExp.saveAsWideText(filename + '.csv', delim='auto')
+
+# Show thw additional info for participant
+num_of_trials = 32 * 4
+result_time_for_participant = time_for_participant.getTime()
+correct_answer_percentage = 100 - (not_correct_answer / num_of_trials * 100)
+end_of_exp_result_time_text = visual.TextStim(win=win, name='text',
+                                              text='You completed the experiment in ' + str(
+                                                  "{:.2f}".format(result_time_for_participant / 60)) + ' min',
+                                              font='Open Sans',
+                                              pos=(0, 20), height=30, wrapWidth=None, ori=0.0,
+                                              color='white', colorSpace='rgb', opacity=None,
+                                              languageStyle='LTR',
+                                              depth=0.0)
+end_of_exp_correct_answer_percentage_text = visual.TextStim(win=win, name='text',
+                                                            text='Total percentage of correct answers: ' +
+                                                                 str(correct_answer_percentage) + '%',
+                                                            font='Open Sans',
+                                                            pos=(0, -60), height=30, wrapWidth=None, ori=0.0,
+                                                            color='white', colorSpace='rgb', opacity=None,
+                                                            languageStyle='LTR',
+                                                            depth=0.0)
+end_of_exp_text = visual.TextStim(win=win, name='text',
+                                  text='Thank you for your participation! Press ESCAPE to finish.',
+                                  font='Open Sans',
+                                  pos=(0, -140), height=30, wrapWidth=None, ori=0.0,
+                                  color='white', colorSpace='rgb', opacity=None,
+                                  languageStyle='LTR',
+                                  depth=0.0)
+end_of_exp_result_time_text.draw()
+end_of_exp_correct_answer_percentage_text.draw()
+end_of_exp_text.draw()
+win.flip()
+end_key = event.waitKeys(keyList='escape')
